@@ -25,30 +25,34 @@
 -- this program.  If not, see <https://www.gnu.org/licenses/>.
 --
 
-return {
-  init = function(self, awful, client, tag)
-    local set_titlebar = function(c, s)
-      if s then
-        if c.titlebar == nil then
-          c:emit_signal("request::titlebars", "rules", {})
-        end
-        awful.titlebar.show(c)
-      else
-        awful.titlebar.hide(c)
+local awful = require("awful")
+
+local floatbar = {}
+
+function floatbar.init()
+  local set_titlebar = function(c, s)
+    if s then
+      if c.titlebar == nil then
+        c:emit_signal("request::titlebars", "rules", {})
       end
+      awful.titlebar.show(c)
+    else
+      awful.titlebar.hide(c)
     end
-
-    client.connect_signal("property::floating", function(c)
-      set_titlebar(c, c.floating)
-    end)
-    client.connect_signal("manage", function(c)
-      set_titlebar(c, c.floating or c.first_tag.layout == awful.layout.suit.floating)
-    end)
-
-    tag.connect_signal("property::layout", function(t)
-      for _, c in pairs(t:clients()) do
-        set_titlebar(c, t.layout == awful.layout.suit.floating)
-      end
-    end)
   end
-}
+
+  client.connect_signal("property::floating", function(c)
+    set_titlebar(c, c.floating)
+  end)
+  client.connect_signal("manage", function(c)
+    set_titlebar(c, c.floating or c.first_tag.layout == awful.layout.suit.floating)
+  end)
+
+  tag.connect_signal("property::layout", function(t)
+    for _, c in pairs(t:clients()) do
+      set_titlebar(c, t.layout == awful.layout.suit.floating)
+    end
+  end)
+end
+
+return floatbar
