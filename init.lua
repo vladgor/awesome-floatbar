@@ -57,7 +57,12 @@ function floatbar.init()
 
   tag.connect_signal("property::layout", function(t) -- luacheck: globals tag
     for _, c in pairs(t:clients()) do
-      set_titlebar(c, t.layout == awful.layout.suit.floating)
+      if t.layout ~= awful.layout.suit.floating then
+        return
+      end
+
+      c.floating = true
+      set_titlebar(c, c.floating)
     end
   end)
 end
