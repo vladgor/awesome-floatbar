@@ -45,6 +45,11 @@ function floatbar.init()
     set_titlebar(c, c.floating)
   end)
 
+  client.connect_signal("property::fullscreen", function(c)
+    set_titlebar(c, not c.fullscreen and c.floating)
+    c:emit_signal("request::geometry", "fullscreen", { store_geometry = false })
+  end)
+
   client.connect_signal("tagged", function(c)
     c.floating = c.first_tag.layout == awful.layout.suit.floating
     set_titlebar(c, c.floating)
