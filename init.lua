@@ -41,21 +41,21 @@ function floatbar.init()
     end
   end
 
-  client.connect_signal("property::floating", function(c)
+  client.connect_signal("property::floating", function(c) -- luacheck: globals client
     set_titlebar(c, c.floating)
   end)
 
-  client.connect_signal("property::fullscreen", function(c)
+  client.connect_signal("property::fullscreen", function(c) -- luacheck: globals client
     set_titlebar(c, not c.fullscreen and c.floating)
     c:emit_signal("request::geometry", "fullscreen", { store_geometry = false })
   end)
 
-  client.connect_signal("tagged", function(c)
+  client.connect_signal("tagged", function(c) -- luacheck: globals client
     c.floating = c.first_tag.layout == awful.layout.suit.floating
     set_titlebar(c, c.floating)
   end)
 
-  tag.connect_signal("property::layout", function(t)
+  tag.connect_signal("property::layout", function(t) -- luacheck: globals tag
     for _, c in pairs(t:clients()) do
       set_titlebar(c, t.layout == awful.layout.suit.floating)
     end
