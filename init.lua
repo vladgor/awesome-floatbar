@@ -44,8 +44,10 @@ function floatbar.init()
   client.connect_signal("property::floating", function(c)
     set_titlebar(c, c.floating)
   end)
-  client.connect_signal("manage", function(c)
-    set_titlebar(c, c.floating or c.first_tag.layout == awful.layout.suit.floating)
+
+  client.connect_signal("tagged", function(c)
+    c.floating = c.first_tag.layout == awful.layout.suit.floating
+    set_titlebar(c, c.floating)
   end)
 
   tag.connect_signal("property::layout", function(t)
